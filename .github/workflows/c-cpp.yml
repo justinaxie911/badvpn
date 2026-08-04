@@ -1,23 +1,40 @@
-name: C/C++ CI
+name: Build BadVPN tun2socks JNI
 
 on:
   push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+    branches: [ "master", "main" ]
+  workflow_dispatch:
 
 jobs:
-  build:
-
+  build-android-native:
+    name: Build Android NDK (${{ matrix.abi }})
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        abi: [armeabi-v7a, arm64-v8a, x86, x86_64]
+    
     steps:
-    - uses: actions/checkout@v4
-    - name: configure
-      run: ./configure
-    - name: make
-      run: make
-    - name: make check
-      run: make check
-    - name: make distcheck
-      run: make distcheck
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Build tun2socks JNI with CMake & NDK
+        run: |
+          mkdir build-${{ matrix.abi }}
+          cd build-${{ matrix.abi }}
+          
+          # Menambahkan flag linker untuk dukungan 16KB Page Size
+          cmake .. \
+            -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake \
+            -DANDROID_ABI=${{ matrix.abi }} \
+            -DANDROID_PLATFORM=android-21 \
+            -DBUILD_NOTHING_BY_DEFAULT=1 \
+            -DBUILD_TUN2SOCKS=1 \
+            -DCMAKE_SHARED_LINKER_FLAGS="-Wl,-z,max-page-size=16384"
+            
+          make tun2socks
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: libtun2socks-android-${{ matrix.abi }}
+          path: build-${{ matrix.abi }}/tun2socks/libtun2socks.so
