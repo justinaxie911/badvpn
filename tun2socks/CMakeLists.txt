@@ -1,15 +1,18 @@
-add_executable(badvpn-tun2socks
+add_library(tun2socks SHARED
     tun2socks.c
     SocksUdpGwClient.c
-)
-target_link_libraries(badvpn-tun2socks system flow tuntap lwip socksclient udpgw_client socks_udp_client)
-
-install(
-    TARGETS badvpn-tun2socks
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    tun2socks_jni.c
 )
 
-install(
-    FILES badvpn-tun2socks.8
-    DESTINATION ${CMAKE_INSTALL_MANDIR}/man8
-)
+target_link_libraries(tun2socks system flow tuntap lwip socksclient udpgw_client socks_udp_client log)
+
+# Perintah install di bawah ini dikomentari karena tidak diperlukan untuk library JNI Android
+# install(
+#     TARGETS badvpn-tun2socks
+#     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+# )
+
+# install(
+#     FILES badvpn-tun2socks.8
+#     DESTINATION ${CMAKE_INSTALL_MANDIR}/man8
+# )
