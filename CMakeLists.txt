@@ -1,13 +1,10 @@
 cmake_minimum_required(VERSION 2.8)
 project(BADVPN C)
 
-# --- KONFIGURASI TAMBAHAN UNTUK ANDROID NDK ---
-# Memaksa penggunaan backend spesifik jika di-compile menggunakan NDK
 add_definitions(-DBADVPN_BREACTOR_BADVPN_USE_EPOLL=1)
 add_definitions(-DBADVPN_BUNIXSIGNAL_USE_SIGNALFD=1)
 add_definitions(-DBADVPN_BTIMER_USE_TIMERFD=1)
 add_definitions(-DBADVPN_LINUX)
-# ---------------------------------------------
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules")
 
