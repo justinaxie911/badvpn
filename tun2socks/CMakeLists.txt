@@ -1,3 +1,9 @@
+# Tambahkan definisi backend secara manual untuk Android NDK
+add_definitions(-DBADVPN_BREACTOR_BADVPN_USE_EPOLL=1)
+add_definitions(-DBADVPN_BUNIXSIGNAL_USE_SIGNALFD=1)
+add_definitions(-DBADVPN_BTIMER_USE_TIMERFD=1)
+add_definitions(-DBADVPN_LINUX)
+
 add_library(tun2socks SHARED
     tun2socks.c
     SocksUdpGwClient.c
